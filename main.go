@@ -41,6 +41,7 @@ func initRouter() *gin.Engine {
 			auth.GET("/products/:id", controllers.GetProductDetail)
 			auth.GET("/orders", controllers.GetOrders)
 			auth.POST("/orders", controllers.CreateOrderStatus)
+			auth.PUT("/orders/:id", controllers.UpdateOrderStatus)
 
 		}
 

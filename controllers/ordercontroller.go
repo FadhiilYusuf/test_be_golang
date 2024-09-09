@@ -33,7 +33,35 @@ func CreateOrderStatus(context *gin.Context) {
 
 	// Simpan produk ke database
 	if err := database.Instance.Create(&orders).Error; err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating product"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating orders"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"message": "Order status updated successfully",
+	})
+}
+
+func UpdateOrderStatus(context *gin.Context) {
+	// Ambil ID produk dari parameter URL
+	var orders models.Order   // Cari produk berdasarkan ID
+	id := context.Param("id") // Perbaiki menjadi "id"
+
+	// Cari produk berdasarkan ID
+	if err := database.Instance.First(&orders, id).Error; err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"error": "orders not found"})
+		return
+	}
+
+	// Ambil data dari request JSON dan update produk
+	if err := context.ShouldBindJSON(&orders); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Simpan perubahan ke database
+	if err := database.Instance.Save(&orders).Error; err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating orders"})
 		return
 	}
 
